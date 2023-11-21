@@ -65,7 +65,7 @@ def verify():
     try:
       context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
       context.verify_mode = ssl.CERT_NONE
-      si = SmartConnect(host="lu309.lalux.local", user="mk417@lalux.local", pwd="XXXXXXXXXXXXXXXXX")
+      si = SmartConnect(host="lu309.lalux.local", user="mk417@lalux.local", pwd="MyFirstSonIsShine$$")
     except Exception as e:
         print("an err occured while connecting to ESX")
         sys.exit(1)
