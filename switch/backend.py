@@ -5,17 +5,56 @@ import getpass
 from flask import Flask, request, jsonify
 import sys
 
-from colorama import Fore,Style
 
 MAX_DEPTH = 10
 servers = [{'name':"VSL-PRO-SAT-001_LU712_BKP1.1_D_PRO",'state':""},{'name':"VSL-PRO-SAT-002_LU712_DC3",'state':""}]
 
 app = Flask(__name__)
 
+def connect():
+    try:
+      context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+      context.verify_mode = ssl.CERT_NONE
+      si = SmartConnect(host="lu309.lalux.local", user="mk417@lalux.local", pwd="MyFirstSonIsShine$$")
+    except Exception as e:
+        print("an err occured while connecting to ESX")
+        sys.exit(1)
+    content = si.RetrieveContent()
+    return content
+
+def powerup(vm, vmname, depth=1):
+        if hasattr(vm, 'childEntity'):
+          if depth > MAX_DEPTH:
+             return
+          vmlist = vm.childEntity
+          for child in vmlist:
+            powerup(child, vmname, depth+1)
+          return
+        if vm.summary.config.name == vmname:
+           print(vmname)
+           if vm.summary.runtime.powerState == "poweredOff":
+             print(f"Starting {vm.summary.config.name} ...")
+             vm.PowerOn()
+           else:
+             print("VM is already up")
+
+def poweroff(vm, vmname, depth=1):
+        if hasattr(vm, 'childEntity'):
+          if depth > MAX_DEPTH:
+             return
+          vmlist = vm.childEntity
+          for child in vmlist:
+            poweroff(child, vmname, depth+1)
+          return
+        if vm.summary.config.name == vmname:
+           print(vmname)
+           if vm.summary.runtime.powerState == "poweredOn":
+             print(f"Shutting down {vm.summary.config.name} ...")
+             vm.PowerOff()
+           else:
+             print("VM is already down")
+
 def check(vm, depth=1):
-    live_flag = "**[LIVE]**"
-    # if this is a group it will have children. if it does, recurse into them
-    # and then return
     if hasattr(vm, 'childEntity'):
         if depth > MAX_DEPTH:
             return
@@ -24,18 +63,12 @@ def check(vm, depth=1):
             check(child, depth+1)
         return
     if vm.summary.config.name == "VSL-PRO-SAT-002_LU712_DC3":
-       #if vm.summary.runtime.powerState == "poweredOn":
-           #print(Fore.YELLOW+f"{live_flag:12}"+Style.RESET_ALL+f"{vm.summary.config.name:40}"+Fore.GREEN+f"{vm.summary.runtime.powerState:10}")
         servers[1]['state']=vm.summary.runtime.powerState
         if servers[1]['state'] == "poweredOn":
             servers[1]['live']=True
         else:
             servers[1]['live']=False 
                           
-       #else:
-       #    live_flag=""
-       #    print(f"{live_flag:12}{vm.summary.config.name:40}"+Fore.RED+f"{vm.summary.runtime.powerState:10}")
-        
     if vm.summary.config.name == "VSL-PRO-SAT-001_LU712_BKP1.1_D_PRO":
         servers[0]['state']=vm.summary.runtime.powerState
         if servers[0]['state'] == "poweredOn":
@@ -61,42 +94,39 @@ def swap(vm, depth=1):
            vm.PowerOn()           
 
 def verify():
-    print("\n")
-    try:
-      context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-      context.verify_mode = ssl.CERT_NONE
-      si = SmartConnect(host="lu309.lalux.local", user="mk417@lalux.local", pwd="MyFirstSonIsShine$$")
-    except Exception as e:
-        print("an err occured while connecting to ESX")
-        sys.exit(1)
-    content = si.RetrieveContent()
+    content = connect()
     for dc in content.rootFolder.childEntity:
       for vm in dc.vmFolder.childEntity:
           check(vm)
-    print(Style.RESET_ALL)
 
-
-@app.route('/status')
+@app.route('/status',methods=['GET'])
 def status():
-    #mdp = getpass.getpass(f"password for {getpass.getuser()}: ")
     verify()
     return jsonify(servers)
 
+
+@app.route('/switchon/<vmname>')
+def switchon(vmname):
+    content = connect()
+    for dc in content.rootFolder.childEntity:
+      for vm in dc.vmFolder.childEntity:
+          powerup(vm,vmname)
+    return ""
+
+@app.route('/switchoff/<vmname>')
+def switchoff(vmname):
+    content = connect()
+    for dc in content.rootFolder.childEntity:
+      for vm in dc.vmFolder.childEntity:
+          poweroff(vm,vmname)
+    return ""
+
 @app.route('/switch')
 def switch():
-    print("\n")
-    try:
-      context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-      context.verify_mode = ssl.CERT_NONE
-      si = SmartConnect(host="lu309.lalux.local", user="mk417@lalux.local", pwd="MyFirstSonIsShine$$")
-    except Exception as e:
-        print("an err occured while connecting to ESX")
-        sys.exit(1)
-    content = si.RetrieveContent()
+    content = connect()
     for dc in content.rootFolder.childEntity:
       for vm in dc.vmFolder.childEntity:
           swap(vm)
-    print(Style.RESET_ALL)
     return "\nSwicthed!\n"
 
 # Start program
