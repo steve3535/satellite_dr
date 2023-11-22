@@ -9,7 +9,7 @@ def signal_handler(signal,frame):
     sys.exit(2)
 
 def check_status():
-    URL="http://127.0.0.1:9001/status"
+    URL="http://172.18.0.1:9001/status"
     res=requests.get(URL)
     
     return res.json()
