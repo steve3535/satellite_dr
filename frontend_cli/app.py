@@ -9,7 +9,7 @@ def signal_handler(signal,frame):
     sys.exit(2)
 
 def check_status():
-    URL="http://172.18.0.1:9001/status"
+    URL="http://backend.satellite-dr.svc.cluster.local:9001/status"
     res=requests.get(URL)
     
     return res.json()
@@ -21,13 +21,13 @@ def monitor():
             print(Fore.RED+'CRIT: both sites are down')
             print(Fore.YELLOW+'WARN: Trying failover to DR ...')
             print(Style.RESET_ALL)
-            URL="http://127.0.0.1:9001/switchon/VSL-PRO-SAT-002_LU712_DC3"
+            URL="http://backend.satellite-dr.svc.cluster.local:9001/switchon/VSL-PRO-SAT-002_LU712_DC3"
             requests.get(URL)
         elif x and y:
             print(Fore.RED+'CRIT both sites are up')
             print(Fore.YELLOW+'WARN: Try shutting down DR ...')
             print(Style.RESET_ALL)
-            URL="http://127.0.0.1:9001/switchoff/VSL-PRO-SAT-002_LU712_DC3"
+            URL="http://backend.satellite-dr.svc.cluster.local:9001/switchoff/VSL-PRO-SAT-002_LU712_DC3"
             requests.get(URL)
         else:
             print(Fore.GREEN+'STATUS OK'+Style.RESET_ALL)
