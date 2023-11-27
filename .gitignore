@@ -1,3 +1,4 @@
 */env
 keys/
-
+.env 
+*.crt
