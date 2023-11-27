@@ -18,19 +18,19 @@ def monitor():
     while True:
         x,y = check_status()[0]['live'],check_status()[1]['live']
         if not(x or y):
-            print(Fore.RED+'CRIT: both sites are down')
-            print(Fore.YELLOW+'WARN: Trying failover to DR ...')
+            print(Fore.RED+time.strftime('%Y-%m-%d-%H:%M:%S')+' CRIT: both sites are down')
+            print(Fore.YELLOW+time.strftime('%Y-%m-%d-%H:%M:%S')+' WARN: Trying failover to DR ...')
             print(Style.RESET_ALL)
             URL="http://backend.satellite-dr.svc.cluster.local:9001/switchon/VSL-PRO-SAT-002_LU712_DC3"
             requests.get(URL)
         elif x and y:
-            print(Fore.RED+'CRIT both sites are up')
-            print(Fore.YELLOW+'WARN: Try shutting down DR ...')
+            print(Fore.RED+time.strftime('%Y-%m-%d-%H:%M:%S')+' CRIT both sites are up')
+            print(Fore.YELLOW+time.strftime('%Y-%m-%d-%H:%M:%S')+' WARN: Try shutting down DR ...')
             print(Style.RESET_ALL)
             URL="http://backend.satellite-dr.svc.cluster.local:9001/switchoff/VSL-PRO-SAT-002_LU712_DC3"
             requests.get(URL)
         else:
-            print(Fore.GREEN+'STATUS OK'+Style.RESET_ALL)
+            print(Fore.GREEN+time.strftime('%Y-%m-%d-%H:%M:%S')+' STATUS OK'+Style.RESET_ALL)
         time.sleep(60)
 
 
