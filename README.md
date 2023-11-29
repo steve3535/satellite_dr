@@ -43,6 +43,9 @@ Whats recommended is the old good backup/restore.
    * the backend is a REST api listening to requests and performing state monitoring and switch actions, through the ESX python SDK  
    * the frontend is just a while loop checking the current sattus and capable of trigering a failover   
 4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -
+5. Images
+   * **Frontend:** https://hub.docker.com/r/kwakousteve/satdr_fe_cli
+   * **Backend:** https://hub.docker.com/r/kwakousteve/satdr_be  
 
 ![](images/topo2.PNG)
 
