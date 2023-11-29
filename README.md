@@ -8,7 +8,9 @@ Whats recommended is the old good backup/restore.
 ## Step 0: Traditional & Manual
 
 0. Topology
-   ![](images/topo1.PNG)   
+   
+   ![](images/topo1.PNG)
+   
 2. backup primary  
 3. restore seondary
    
