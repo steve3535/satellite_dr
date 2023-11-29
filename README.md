@@ -11,12 +11,24 @@ Whats recommended is the old good backup/restore.
    
    ![](images/topo1.PNG)
    
-2. **backup primary**  
-3. **restore seondary**
+1. **backup primary**
+   
+   ```bash
+   vgcreate backup_vg /dev/sdc
+   lvcreate -n backup_lv -L 500G backup_vg
+   mkfs.xfs /dev/backup_vg/backup_lv
+   mkdir /backup
+   setfacl -R -m u:postgres:rwx /backup/
+   setfacl -R -m d:u:postgres:rwx /backup/
+   satellite-maintain backup offline /backup
+   scp -r satellite-backup-2023-10-31-16-10-32/ localadmin@172.22.56.21:/backup/
+   ```
+   
+2. **restore seondary**
    * prior, setup a second VM in the DR site with the same IP/fqdn, but powered off.
    * 
 
-4. **Use load balancer ?**
+3. **Use load balancer ?**
   
  
   
