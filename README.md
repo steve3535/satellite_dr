@@ -42,7 +42,9 @@ Whats recommended is the old good backup/restore.
 3. the code is split into two components: backend and frontend  
    * the backend is a REST api listening to requests and performing state monitoring and switch actions, through the ESX python SDK  
    * the frontend is just a while loop checking the current sattus and capable of trigering a failover   
-4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -  
+4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -
+
+![](images/topo2.PNG)
 
 Improvements later on:
 1. check should not only be limited to powerstate but get service status via Satellite API  
