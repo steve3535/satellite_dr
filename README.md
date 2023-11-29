@@ -6,9 +6,10 @@ Keep in mind that only one instance of Satellite should be active at anytime.
 
 ## Step 0: Traditional & Manual
 
-0. Topology  
-1. backup primary  
-2. restore seondary
+0. Topology
+   ![](images/topo1.PNG)   
+2. backup primary  
+3. restore seondary
    
 **PS:** 
 1) both primary and secondary must use same IP/FQDN
