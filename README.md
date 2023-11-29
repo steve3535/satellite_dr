@@ -21,7 +21,6 @@ Whats recommended is the old good backup/restore.
    setfacl -R -m u:postgres:rwx /backup/
    setfacl -R -m d:u:postgres:rwx /backup/
    satellite-maintain backup offline /backup
-   scp -r satellite-backup-2023-10-31-16-10-32/ localadmin@172.22.56.21:/backup/
    ```
    
 2. **restore seondary**
