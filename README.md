@@ -44,8 +44,8 @@ Whats recommended is the old good backup/restore.
    * the frontend is just a while loop checking the current sattus and capable of trigering a failover   
 4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -
 5. Images
-   * **Frontend:** https://hub.docker.com/r/kwakousteve/satdr_fe_cli
-   * **Backend:** https://hub.docker.com/r/kwakousteve/satdr_be  
+   * **Frontend:** kwakousteve/satdr_fe_cli
+   * **Backend:** kwakousteve/satdr_be  
 
 ![](images/topo2.PNG)
 
