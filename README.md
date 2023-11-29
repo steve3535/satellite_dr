@@ -7,38 +7,35 @@ Whats recommended is the old good backup/restore.
 
 ## Step 0: Traditional & Manual
 
-0. Topology
+0. **Topology**
    
    ![](images/topo1.PNG)
    
-2. backup primary  
-3. restore seondary
-   
-**PS:** 
-1) both primary and secondary must use same IP/FQDN
-2) We have an F5, can we leverage on that ?
-   
-I setup a second VM in our DR site with the same IP , but powered off.  
-I wanted to use F5. but the fact that the two servers should use same IP was somehow problematic ...  
-I tought 1 VIP on top two real different IPs, and the F5 will present the VIP/FQDN to the clients, which also meman in that case that both servers remain up and F5 will load balance on either ... 
-I dont know a bit about F5 ...  
-Now that I am thinking I will test it with HAPROXY as well ...   
-Ok, this option being out, door suddenly opened for an opprotunity to code :)   
+2. **backup primary**  
+3. **restore seondary**
+   * prior, setup a second VM in the DR site with the same IP/fqdn, but powered off.
+   * 
 
+4. **Use load balancer ?**
+  
+ 
+  
 ## BYOS: Build Your Own Solution   
-Idea:  
+**Idea:**    
 1. have python connect to ESX and regularly check powerstate of the two VMs
-2. if both VM are down or both are up: this is not a healthy situation:
-   * if both are up: we shutdown DR
-   * if both are down: we up the Live
-3. In other case the code should return OK
-4. the code should be split into two components: backend and frontend - the backend is a REST api listening to requests and performing switch actions, the frontend is a CLI looping in checking the current sattus
-5. all components will be containerized and eventually deployed as pods in a k8s cluster - for HA & ease of deployment
+2. if both VM are down or both are up: this is not a healthy situation:  
+   * if both are up --> that might be some kind of error --> we shutdown Secondary  
+   * if both are down --> we bring up the Primary  
+   If either Primary or Secondary is up, we return Status OK  
+3. the code is split into two components: backend and frontend  
+   * the backend is a REST api listening to requests and performing state monitoring and switch actions, through the ESX python SDK  
+   * the frontend is just a while loop checking the current sattus and capable of trigering a failover   
+4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -  
 
 Improvements later on:
-1. check should not only be limited to powerstate but retrieve via hammer api the actual state of Satellite
-2. possibly integrate backup/restore routines for a true failover/switchover
-3. Develop a web frontend to allow more actions and to kickstart a kind of platform engineering   
+1. check should not only be limited to powerstate but get service status via Satellite API  
+2. integrate backup/restore routines as part of the failover/switchover  
+3. Develop a web frontend     
 
 ## Let the journeny begin !
 
