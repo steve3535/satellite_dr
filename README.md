@@ -11,12 +11,24 @@ Whats recommended is the old good backup/restore.
    
    ![](images/topo1.PNG)
    
-2. **backup primary**  
-3. **restore seondary**
+1. **backup primary**
+   
+   ```bash
+   vgcreate backup_vg /dev/sdc
+   lvcreate -n backup_lv -L 500G backup_vg
+   mkfs.xfs /dev/backup_vg/backup_lv
+   mkdir /backup
+   setfacl -R -m u:postgres:rwx /backup/
+   setfacl -R -m d:u:postgres:rwx /backup/
+   satellite-maintain backup offline /backup
+   scp -r satellite-backup-2023-10-31-16-10-32/ localadmin@172.22.56.21:/backup/
+   ```
+   
+2. **restore seondary**
    * prior, setup a second VM in the DR site with the same IP/fqdn, but powered off.
    * 
 
-4. **Use load balancer ?**
+3. **Use load balancer ?**
   
  
   
@@ -30,7 +42,12 @@ Whats recommended is the old good backup/restore.
 3. the code is split into two components: backend and frontend  
    * the backend is a REST api listening to requests and performing state monitoring and switch actions, through the ESX python SDK  
    * the frontend is just a while loop checking the current sattus and capable of trigering a failover   
-4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -  
+4. all components will be containerized and deployed as pods in a k8s cluster - just for the fun -
+5. Images
+   * **Frontend:** kwakousteve/satdr_fe_cli
+   * **Backend:** kwakousteve/satdr_be  
+
+![](images/topo2.PNG)
 
 Improvements later on:
 1. check should not only be limited to powerstate but get service status via Satellite API  
