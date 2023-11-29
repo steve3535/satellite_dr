@@ -9,6 +9,7 @@ def signal_handler(signal,frame):
     sys.exit(2)
 
 def check_status():
+    # set to your backend service name
     URL="http://backend.satellite-dr.svc.cluster.local:9001/status"
     res=requests.get(URL)
     
