@@ -1,8 +1,9 @@
 # sudo su - SRE #Ep001
 # Disaster Recovery solution for Red Hat Satellite
-Chapter 10 of the system administration manual implies there is no native DR solution for Satellite: https://access.redhat.com/documentation/en-us/red_hat_satellite/6.12/html/administering_red_hat_satellite/backing-up-satellite-server-and-capsule_admin   
+Chapter 10 of the system administration manual implies there is no native DR solution for Satellite:  
+https://access.redhat.com/documentation/en-us/red_hat_satellite/6.12/html/administering_red_hat_satellite/backing-up-satellite-server-and-capsule_admin   
 Whats recommended is the old good backup/restore.  
-Keep in mind that only one instance of Satellite should be active at anytime.
+!! Keep in mind that only one instance of Satellite should be active at anytime.  
 
 ## Step 0: Traditional & Manual
 
